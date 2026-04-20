@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════════════════════════
+   header.css — sticky header, desktop nav, mobile menu,
+                share dropdown. Used on ALL pages.
+   Depends on: general.css (for CSS variables)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── HEADER SHELL ──────────────────────────────────────── */
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background-color: var(--black);
+  padding: 0 24px;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ─── LOGO ──────────────────────────────────────────────── */
+
+.logo {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  transition: border-color var(--transition);
+}
+
+@media (hover: hover) {
+  .logo img:hover {
+    border-color: var(--green-light);
+  }
+}
+
+/* ─── LEFT / RIGHT SLOTS ────────────────────────────────── */
+
+.left-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: start;
+}
+
+.right-side {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 8px;
+}
+
+/* ─── ICON BUTTON ───────────────────────────────────────── */
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition);
+}
+
+@media (hover: hover) {
+  .icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+  }
+}
+
+/* ─── HEADER ICONS (SVG / IMG) ──────────────────────────── */
+
+.header-icon {
+  width: 21px;
+  height: 21px;
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+  transition: opacity var(--transition);
+  pointer-events: none;
+}
+
+.icon-btn:hover .header-icon {
+  opacity: 1;
+}
+
+/* ─── DESKTOP NAV ───────────────────────────────────────── */
+
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  direction: rtl;
+}
+
+.desktop-menu a {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.2px;
+  transition: background-color var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+
+.desktop-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.09);
+  color: #fff;
+}
+
+.desktop-menu a.active {
+  color: var(--green-light);
+  background-color: var(--green-subtle);
+}
+
+/* ─── HAMBURGER ─────────────────────────────────────────── */
+
+.menu-btn {
+  display: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  transition: background-color var(--transition);
+}
+
+@media (hover: hover) {
+  .menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.09);
+  }
+}
+
+/* ─── MOBILE MENU ───────────────────────────────────────── */
+
+.mobile-menu {
+  position: fixed;
+  top: 60px; /* matches mobile header height */
+  left: 0;
+  right: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  background-color: #141414;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease;
+  direction: rtl;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-menu.active {
+  max-height: 280px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-menu a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 15px 24px;
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--transition), color var(--transition), padding-right var(--transition);
+}
+
+.mobile-menu a:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu a:hover,
+.mobile-menu a.active {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--green-light);
+  padding-right: 30px;
+}
+
+/* ─── RESPONSIVE HEADER ─────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .desktop-menu { display: none; }
+  .menu-btn     { display: flex; }
+
+  .logo img {
+    height: 42px;
+    width: 42px;
+  }
+
+  .header {
+    height: 60px;
+    padding: 0 16px;
+  }
+}
+
+/* ─── SHARE DROPDOWN ────────────────────────────────────── */
+
+.share-wrapper {
+  position: relative;
+}
+
+.share-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  min-width: 168px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  z-index: 2000;
+  animation: fadeDown 0.18s ease;
+}
+
+.share-dropdown.active {
+  display: block;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.share-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color var(--transition);
+}
+
+.share-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.share-item-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}

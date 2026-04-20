@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/General.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/about.css">
+    <title>من نحن — SNFLSE</title>
+</head>
+<body>
+  <header class="header">
+
+    <!-- Left icons -->
+    <div class="left-icons">
+      <div class="share-wrapper">
+        <button class="icon-btn" id="shareIcon" aria-label="مشاركة" aria-expanded="false" aria-haspopup="true">
+          <img src="imgs/share-icon.svg" class="header-icon" alt="مشاركة">
+        </button>
+        <div class="share-dropdown" id="shareDropdown" role="menu">
+          <a href="https://www.facebook.com/share/g/1HC8PSadK2/" target="_blank" rel="noopener noreferrer" class="share-item" role="menuitem">
+            <svg class="share-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2" aria-hidden="true">
+              <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.018 1.791-4.688 4.532-4.688 1.313 0 2.686.235 2.686.235v2.953h-1.513c-1.491 0-1.956.928-1.956 1.879v2.281h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+            </svg>
+            Facebook
+          </a>
+          <a href="mailto:YOUR_EMAIL@gmail.com" class="share-item" role="menuitem">
+            <svg class="share-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.906.732-1.636 1.636-1.636h.749L12 10.91l9.615-7.089h.749A1.636 1.636 0 0124 5.457z" fill="#EA4335"/>
+            </svg>
+            Gmail
+          </a>
+        </div>
+      </div>
+      <button class="icon-btn" aria-label="الموقع">
+        <img src="imgs/location.svg" class="header-icon" alt="الموقع">
+      </button>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo">
+      <img src="imgs/Logo.jpg" alt="شعار النقابة الوطنية لموظفي المخابر">
+    </div>
+
+    <div class="right-side">
+      <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mobileMenu">
+        <img src="imgs/menu-btn.svg" class="header-icon" alt="">
+      </button>
+    
+      <nav class="desktop-menu" aria-label="التنقل الرئيسي">
+        <a href="index.html" class="active">الرئيسية</a>
+        <a href="form.html">استمارة الانخراط</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">اتصل بنا</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile dropdown -->
+  <nav class="mobile-menu" id="mobileMenu" aria-label="القائمة المتنقلة" aria-hidden="true">
+    <a href="index.html" class="active">الرئيسية</a>
+    <a href="form.html">استمارة الانخراط</a>
+    <a href="about.html">من نحن</a>
+    <a href="contact.html">اتصل بنا</a>
+  </nav>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>

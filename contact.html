@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/contacts.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/General.css">
+    <title>اتصل بنا — SNFLSE</title>
+  </head>
+
+  <body>
+
+    <!-- ─── HEADER ─────────────────────────────────────── -->
+    <header class="header">
+
+      <!-- Left icons -->
+      <div class="left-icons">
+        <div class="share-wrapper">
+          <button class="icon-btn" id="shareIcon" aria-label="مشاركة" aria-expanded="false" aria-haspopup="true">
+            <img src="imgs/share-icon.svg" class="header-icon" alt="مشاركة">
+          </button>
+          <div class="share-dropdown" id="shareDropdown" role="menu">
+            <a href="https://www.facebook.com/share/g/1HC8PSadK2/" target="_blank" rel="noopener noreferrer" class="share-item" role="menuitem">
+              <svg class="share-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2" aria-hidden="true">
+                <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.018 1.791-4.688 4.532-4.688 1.313 0 2.686.235 2.686.235v2.953h-1.513c-1.491 0-1.956.928-1.956 1.879v2.281h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+              </svg>
+              Facebook
+            </a>
+            <a href="mailto:YOUR_EMAIL@gmail.com" class="share-item" role="menuitem">
+              <svg class="share-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.906.732-1.636 1.636-1.636h.749L12 10.91l9.615-7.089h.749A1.636 1.636 0 0124 5.457z" fill="#EA4335"/>
+              </svg>
+              Gmail
+            </a>
+          </div>
+        </div>
+        <button class="icon-btn" aria-label="الموقع">
+          <img src="imgs/location.svg" class="header-icon" alt="الموقع">
+        </button>
+      </div>
+
+      <!-- Logo -->
+      <div class="logo">
+        <img src="imgs/Logo.jpg" alt="شعار النقابة الوطنية لموظفي المخابر">
+      </div>
+
+      <div class="right-side">
+        <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mobileMenu">
+          <img src="imgs/menu-btn.svg" class="header-icon" alt="">
+        </button>
+
+        <nav class="desktop-menu" aria-label="التنقل الرئيسي">
+          <a href="index.html">الرئيسية</a>
+          <a href="form.html">استمارة الانخراط</a>
+          <a href="about.html">من نحن</a>
+          <a href="contact.html" class="active">اتصل بنا</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Mobile dropdown -->
+    <nav class="mobile-menu" id="mobileMenu" aria-label="القائمة المتنقلة" aria-hidden="true">
+      <a href="index.html">الرئيسية</a>
+      <a href="form.html">استمارة الانخراط</a>
+      <a href="about.html">من نحن</a>
+      <a href="contact.html" class="active">اتصل بنا</a>
+    </nav>
+
+    <!-- ─── PAGE HERO ───────────────────────────────────── -->
+    <div class="page-hero">
+      <p class="page-hero-label">SNFLSE</p>
+      <h1 class="page-hero-title">اتصل بنا</h1>
+    </div>
+
+    <!-- ─── MAIN CONTENT ────────────────────────────────── -->
+    <main class="contact-page" aria-label="صفحة الاتصال">
+
+      <!-- Left: Contact info -->
+      <div class="contact-info reveal">
+        <h2 class="contact-info-title">تواصل معنا</h2>
+        <p class="contact-info-subtitle">
+          نحن هنا للإجابة على استفساراتكم ومتابعة ملفاتكم.<br>
+          لا تترددوا في التواصل معنا عبر أي من القنوات التالية.
+        </p>
+
+        <div class="contact-methods">
+
+          <!-- Email -->
+          <a href="mailto:snflse@gmail.com" class="contact-method">
+            <div class="contact-method-icon">
+              <!-- Envelope icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 4H4c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l7.386 5.745a1 1 0 0 0 1.228 0L20 9.044 20.002 18H4z"/>
+              </svg>
+            </div>
+            <div class="contact-method-body">
+              <span class="contact-method-label">البريد الإلكتروني</span>
+              <span class="contact-method-value">snflse@gmail.com</span>
+            </div>
+          </a>
+
+          <!-- Phone -->
+          <a href="tel:+213000000000" class="contact-method">
+            <div class="contact-method-icon">
+              <!-- Phone icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/>
+              </svg>
+            </div>
+            <div class="contact-method-body">
+              <span class="contact-method-label">الهاتف</span>
+              <span class="contact-method-value" dir="ltr">+213 000 000 000</span>
+            </div>
+          </a>
+
+          <!-- Address -->
+          <div class="contact-method" style="cursor: default;">
+            <div class="contact-method-icon">
+              <!-- Location icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 010 5z"/>
+              </svg>
+            </div>
+            <div class="contact-method-body">
+              <span class="contact-method-label">العنوان</span>
+              <span class="contact-method-value">الجزائر العاصمة، الجزائر</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Social links -->
+        <div class="social-row">
+          <a href="https://www.facebook.com/share/g/1HC8PSadK2/" target="_blank" rel="noopener noreferrer" class="social-btn facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2" aria-hidden="true">
+              <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.018 1.791-4.688 4.532-4.688 1.313 0 2.686.235 2.686.235v2.953h-1.513c-1.491 0-1.956.928-1.956 1.879v2.281h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+            </svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="contact-form-card reveal">
+        <h2 class="form-title">أرسل لنا رسالة</h2>
+
+        <div id="contactForm">
+          <div class="form-group">
+            <label class="form-label" for="fullName">الاسم الكامل <span>*</span></label>
+            <input class="form-input" type="text" id="fullName" name="fullName" placeholder="أدخل اسمك الكامل" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">البريد الإلكتروني <span>*</span></label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="example@mail.com" required autocomplete="email" dir="ltr">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">رقم الهاتف</label>
+            <input class="form-input" type="tel" id="phone" name="phone" placeholder="+213 ..." autocomplete="tel" dir="ltr">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="subject">الموضوع <span>*</span></label>
+            <input class="form-input" type="text" id="subject" name="subject" placeholder="موضوع رسالتك" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">الرسالة <span>*</span></label>
+            <textarea class="form-textarea" id="message" name="message" placeholder="اكتب رسالتك هنا..." required></textarea>
+          </div>
+
+          <button type="button" class="form-submit" id="submitBtn">إرسال الرسالة</button>
+        </div>
+
+        <!-- Success state -->
+        <div class="form-success" id="formSuccess" aria-live="polite">
+          <div class="form-success-icon">✅</div>
+          <p class="form-success-text">تم إرسال رسالتك بنجاح! سنتواصل معك في أقرب وقت.</p>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ─── FOOTER ──────────────────────────────────────── -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <img src="imgs/Logo.jpg" alt="شعار النقابة">
+          <span>S.N.F.L.S.E</span>
+        </div>
+        <p class="footer-copy" dir="rtl">
+          © 2025 النقابة الوطنية المستقلة لموظفي مخابر التربية — جميع الحقوق محفوظة
+        </p>
+      </div>
+    </footer>
+
+    <script src="scripts/contact.js"></script>
+  </body>
+</html>
