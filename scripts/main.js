@@ -100,17 +100,42 @@ if (membershipForm) {
 
     if (!valid) return;
 
-    // Disable submit while "sending"
+    // Disable submit while sending
     const submitBtn = membershipForm.querySelector('.form-submit');
     submitBtn.disabled = true;
     submitBtn.textContent = 'جار الإرسال...';
 
-    // Simulate async send — replace with real API / EmailJS / Formspree
-    setTimeout(() => {
-      membershipForm.style.display = 'none';
-      if (formSuccess) {
-        formSuccess.classList.add('visible');
-      }
-    }, 900);
+    // Collect form data
+    const data = {
+      firstName : membershipForm.querySelector('[name="firstName"]').value.trim(),
+      lastName  : membershipForm.querySelector('[name="lastName"]').value.trim(),
+      email     : membershipForm.querySelector('[name="email"]').value.trim(),
+      phone     : membershipForm.querySelector('[name="phone"]').value.trim(),
+      work      : membershipForm.querySelector('[name="work"]').value.trim(),
+      state     : membershipForm.querySelector('[name="state"]').value.trim(),
+      ssn       : membershipForm.querySelector('[name="ssn"]').value.trim(),
+    };
+
+    // ── Paste your Apps Script deployment URL here ──────────
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyzJLyMWUTzQ4YgM1LZdm7xKHr2CDaNkIGkSS3ZnDaFjRP-1pznDLGhe5orhFTqylmT/exec';
+    // ────────────────────────────────────────────────────────
+
+    fetch(SHEET_URL, {
+      method      : 'POST',
+      mode        : 'no-cors',          // Apps Script requires this
+      headers     : { 'Content-Type': 'application/json' },
+      body        : JSON.stringify(data),
+    })
+      .then(() => {
+        // no-cors means we get an opaque response — any response = success
+        membershipForm.style.display = 'none';
+        if (formSuccess) formSuccess.classList.add('visible');
+      })
+      .catch(() => {
+        // Re-enable button so the user can try again
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'إرسال الطلب';
+        alert('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.');
+      });
   });
 }

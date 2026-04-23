@@ -74,11 +74,82 @@ const members = [
     name:  'السيدة سقني حياة',
     role:  'رئيسة النقابة',
     job:   '',
-    photo: '',          // e.g. 'imgs/hayat.jpg'
+    photo: 'imgs/members/hayat segni.jpg',          // e.g. 'imgs/hayat.jpg'
     phone: '0777102070',
     email: ''           // e.g. 'hayat@snflse.dz'
+  } ,
+  {
+    name: 'حابي محمد صلاح',
+    role:'',
+    job:'',
+    photo:'imgs/members/habi salah.jpg',
+    phone:'0669628600',
+    email:'labosi.salah@gmail.com',
+  } ,
+  {
+    name: 'نوال شنيكل',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0797468094',
+    email:'nawel.chenikel16@gmail.com',
+  } ,
+  {
+    name: 'ويزا بلقاسم',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0665647616',
+    email:'ouizabekkvcem@gmail.com',
+  } ,
+  {
+    name: 'ربيحة شواشي',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0551885188',
+    email:'chouachirebiha@gmail.com',
+  } ,
+  {
+    name: 'مواسي بوزيد',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0554211377',
+    email:'bobomoua515@gmail.com',
+  } ,
+  {
+    name: 'مزغيش عيسى',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0775570990',
+    email:'.mezaissa0@gmail.com',
+  } ,
+  {
+    name: 'صابر مجدوب',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0777548676',
+    email:'maxmalcom14@gmail.com',
+  } ,
+  {
+    name: 'بابش سعيد',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0696246497',
+    email:'babechesaid73@gmail.com',
+  } ,
+  {
+    name: 'فقيد بوسعد',
+    role:'',
+    job:'',
+    photo:'',
+    phone:'0550163030',
+    email:'boussadfekid6@gmail.com',
   }
-  // Add more members here…
 ];
 
 // ── SVG icons ─────────────────────────────────────────────────────
