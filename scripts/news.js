@@ -118,11 +118,102 @@ function updateLightbox() {
   lightboxNext.style.display = currentPhotos.length > 1 ? '' : 'none';
 }
 
+if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+
+if (lightbox) {
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+}
+
+if (lightboxPrev) {
+  lightboxPrev.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+    updateLightbox();
+  });
+}
+
+if (lightboxNext) {
+  lightboxNext.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % currentPhotos.length;
+    updateLightbox();
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (postModal && postModal.classList.contains('active')) closePostModal();
+    else if (lightbox && lightbox.classList.contains('active')) closeLightbox();
+  }
+  if (!lightbox || !lightbox.classList.contains('active')) return;
+  if (e.key === 'ArrowLeft')  { currentIndex = (currentIndex + 1) % currentPhotos.length; updateLightbox(); }
+  if (e.key === 'ArrowRight') { currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length; updateLightbox(); }
+});
+
+/* ── Post Modal ───────────────────────────────────────── */
+const postModal      = document.getElementById('postModal');
+const postModalClose = document.getElementById('postModalClose');
+
+function openPostModal(post, photos) {
+  const type = (post.type || 'news').trim().toLowerCase();
+
+  // Media
+  const mediaEl = document.getElementById('postModalMedia');
+  mediaEl.innerHTML = '';
+
+  if (type === 'video' && post.media) {
+    mediaEl.innerHTML = `<iframe src="${formatMediaLink(post.media)}" allowfullscreen loading="lazy"></iframe>`;
+  } else if (type === 'photo' && photos && photos.length) {
+    if (photos.length === 1) {
+      mediaEl.innerHTML = `<img src="${photos[0]}" alt="${post.title || ''}">`;
+    } else {
+      const imgs = photos.map((src, i) =>
+        `<img src="${src}" alt="صورة ${i+1}" class="lightbox-trigger-modal" data-photos='${JSON.stringify(photos)}' data-index="${i}">`
+      ).join('');
+      mediaEl.innerHTML = `<div class="modal-gallery">${imgs}</div>`;
+
+      // Lightbox triggers inside modal
+      mediaEl.querySelectorAll('.lightbox-trigger-modal').forEach(el => {
+        el.addEventListener('click', () => {
+          const p   = JSON.parse(el.dataset.photos || '[]');
+          const idx = parseInt(el.dataset.index || '0');
+          openLightbox(p, idx);
+        });
+      });
+    }
+  }
+
+  // Text
+  document.getElementById('postModalCategory').textContent = post.category || '';
+  document.getElementById('postModalTitle').textContent    = post.title    || '';
+  document.getElementById('postModalContent').textContent  = post.content  || '';
+  document.getElementById('postModalDateText').textContent = post.date     || '';
+
+  postModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePostModal() {
+  postModal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+if (postModalClose) postModalClose.addEventListener('click', closePostModal);
+if (postModal) {
+  postModal.addEventListener('click', (e) => {
+    if (e.target === postModal) closePostModal();
+  });
+}
+
+/* ── attachLightboxTriggers (now opens post modal) ────── */
 function attachLightboxTriggers() {
-  document.querySelectorAll('.lightbox-trigger').forEach((trigger) => {
-    trigger.addEventListener('click', () => {
-      const photos = JSON.parse(trigger.dataset.photos || '[]');
-      if (photos.length) openLightbox(photos, 0);
+  document.querySelectorAll('.news-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('iframe')) return;
+      const post   = JSON.parse(card.dataset.post   || '{}');
+      const photos = JSON.parse(card.dataset.photos || '[]');
+      openPostModal(post, photos);
     });
   });
 }
@@ -190,6 +281,13 @@ function renderNews(posts) {
 
     const card = document.createElement("article");
     card.className = "news-card";
+    // Store post data and photos on the card
+    card.dataset.post   = JSON.stringify(post);
+    card.dataset.photos = JSON.stringify(
+      type === 'photo' && media
+        ? media.split(',').map(u => formatMediaLink(u.trim())).filter(Boolean)
+        : []
+    );
     card.dataset.type = type;
     card.style.animationDelay = `${i * 0.08}s`;
 
@@ -296,7 +394,7 @@ function formatMediaLink(url) {
   if (url.includes('/preview') || url.includes('/embed/')) return url;
 
   const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+  if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
 
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
