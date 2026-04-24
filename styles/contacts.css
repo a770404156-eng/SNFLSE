@@ -70,7 +70,6 @@
      margin: 64px auto;
      padding: 0 24px;
      display: grid;
-     grid-template-columns: 1fr 420px;
      gap: 48px;
      align-items: start;
    }
