@@ -109,15 +109,18 @@ if (membershipForm) {
     const data = {
       firstName : membershipForm.querySelector('[name="firstName"]').value.trim(),
       lastName  : membershipForm.querySelector('[name="lastName"]').value.trim(),
+      birthDate  : membershipForm.querySelector('[name="b-date"]').value.trim(),
       email     : membershipForm.querySelector('[name="email"]').value.trim(),
       phone     : membershipForm.querySelector('[name="phone"]').value.trim(),
       work      : membershipForm.querySelector('[name="work"]').value.trim(),
       state     : membershipForm.querySelector('[name="state"]').value.trim(),
       ssn       : membershipForm.querySelector('[name="ssn"]').value.trim(),
+      cardNum  : membershipForm.querySelector('[name="card-num"]').value.trim(),
+      oldMember  : membershipForm.querySelector('[name="old-member"]').value.trim()
     };
 
     // ── Paste your Apps Script deployment URL here ──────────
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyzJLyMWUTzQ4YgM1LZdm7xKHr2CDaNkIGkSS3ZnDaFjRP-1pznDLGhe5orhFTqylmT/exec';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwb-HiDgYTnur4kT74i_U-COOOoixHgPqZmqMm6BWbvfpCpw1ALDcnVJxNZ8Yzq7AQnag/exec';
     // ────────────────────────────────────────────────────────
 
     fetch(SHEET_URL, {
