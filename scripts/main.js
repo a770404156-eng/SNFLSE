@@ -109,14 +109,14 @@ if (membershipForm) {
     const data = {
       firstName : membershipForm.querySelector('[name="firstName"]').value.trim(),
       lastName  : membershipForm.querySelector('[name="lastName"]').value.trim(),
-      birthDate  : membershipForm.querySelector('[name="b-date"]').value.trim(),
+      birthDate : membershipForm.querySelector('[name="b-date"]').value.trim(),
       email     : membershipForm.querySelector('[name="email"]').value.trim(),
-      phone     : membershipForm.querySelector('[name="phone"]').value.trim(),
+      phone     : String(membershipForm.querySelector('[name="phone"]').value.trim()),
       work      : membershipForm.querySelector('[name="work"]').value.trim(),
       state     : membershipForm.querySelector('[name="state"]').value.trim(),
-      ssn       : membershipForm.querySelector('[name="ssn"]').value.trim(),
-      cardNum  : membershipForm.querySelector('[name="card-num"]').value.trim(),
-      oldMember  : membershipForm.querySelector('[name="old-member"]').value.trim()
+      ssn       : String(membershipForm.querySelector('[name="ssn"]').value.trim()),
+      cardNum   : String(membershipForm.querySelector('[name="card-num"]').value.trim()),
+      oldMember : String(membershipForm.querySelector('[name="old-member"]').value.trim())
     };
 
     // ── Paste your Apps Script deployment URL here ──────────
