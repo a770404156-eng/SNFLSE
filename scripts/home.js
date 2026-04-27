@@ -76,7 +76,7 @@ const members = [
     job:   '',
     photo: 'imgs/members/hayat segni.jpg',          // e.g. 'imgs/hayat.jpg'
     phone: '0777102070',
-    email: ''           // e.g. 'hayat@snflse.dz'
+    email: 'Hayatsegueni75@gmail.com'           // e.g. 'hayat@snflse.dz'
   } ,
   {
     name: 'حابي محمد صلاح',
