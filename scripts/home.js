@@ -146,7 +146,7 @@ const members = [
     name: 'فقيد بوسعد',
     role:'',
     job:'',
-    photo:'',
+    photo:'imgs/members/fakid.jpg',
     phone:'0550163030',
     email:'boussadfekid6@gmail.com',
   }
