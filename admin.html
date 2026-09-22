@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/imgs/Logo.jpg">
+    <link rel="apple-touch-icon" href="/imgs/Logo.jpg">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/general.css">
+    <link rel="stylesheet" href="styles/admin.css">
+    <title>لوحة التحكم — SNFLSE</title>
+  </head>
+
+  <body>
+
+    <!-- ─── LOGIN SCREEN ────────────────────────────────── -->
+    <div id="loginScreen" class="admin-auth">
+      <form id="loginForm" class="admin-auth-box">
+        <img src="imgs/Logo.jpg" alt="SNFLSE" class="admin-auth-logo">
+        <h1>لوحة تحكم الأخبار</h1>
+        <p id="loginError" class="admin-error" hidden></p>
+        <label>البريد الإلكتروني
+          <input type="email" id="loginEmail" required autocomplete="username">
+        </label>
+        <label>كلمة المرور
+          <input type="password" id="loginPassword" required autocomplete="current-password">
+        </label>
+        <button type="submit" class="admin-btn-primary full">تسجيل الدخول</button>
+      </form>
+    </div>
+
+    <!-- ─── ADMIN DASHBOARD ─────────────────────────────── -->
+    <div id="adminApp" class="admin-app" hidden>
+      <header class="admin-header">
+        <div class="admin-header-left">
+          <img src="imgs/Logo.jpg" alt="SNFLSE" class="admin-header-logo">
+          <span>لوحة تحكم الأخبار</span>
+        </div>
+        <div class="admin-header-right">
+          <span id="userEmail" class="admin-user-email"></span>
+          <button id="logoutBtn" class="admin-btn-ghost">تسجيل الخروج</button>
+        </div>
+      </header>
+
+      <main class="admin-main">
+
+        <!-- One-time migration from the old Google Sheet -->
+        <section id="importSection" class="admin-card admin-import" hidden>
+          <div>
+            <h2>استيراد الأخبار القديمة</h2>
+            <p>نقل كل الأخبار الموجودة حالياً في Google Sheet إلى قاعدة البيانات الجديدة. يُنفَّذ مرة واحدة فقط.</p>
+          </div>
+          <button id="importBtn" class="admin-btn-primary">استيراد الآن</button>
+        </section>
+
+        <!-- New / edit post -->
+        <section class="admin-card">
+          <h2 id="formTitle">نشر خبر جديد</h2>
+          <form id="postForm" class="admin-form">
+            <input type="hidden" id="postId">
+
+            <label>نوع المنشور
+              <select id="postType">
+                <option value="news">خبر (نص فقط)</option>
+                <option value="photo">صور</option>
+                <option value="video">فيديو</option>
+              </select>
+            </label>
+
+            <label>العنوان
+              <input type="text" id="postTitle" required>
+            </label>
+
+            <label>التصنيف
+              <input type="text" id="postCategory" placeholder="مثال: نشاط، بيان، تكوين...">
+            </label>
+
+            <label>النص
+              <textarea id="postContent" rows="5" required></textarea>
+            </label>
+
+            <div id="photoField" class="admin-field" hidden>
+              <label>الصور
+                <input type="file" id="postPhotos" accept="image/*" multiple>
+              </label>
+              <div id="photoPreview" class="admin-photo-preview"></div>
+              <p id="uploadStatus" class="admin-upload-status"></p>
+            </div>
+
+            <div id="videoField" class="admin-field" hidden>
+              <label>رابط الفيديو (يوتيوب أو Google Drive)
+                <input type="url" id="postVideoLink" placeholder="https://youtube.com/watch?v=...">
+              </label>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" id="submitBtn" class="admin-btn-primary">نشر</button>
+              <button type="button" id="cancelEditBtn" class="admin-btn-ghost" hidden>إلغاء التعديل</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Existing posts -->
+        <section class="admin-card">
+          <h2>الأخبار المنشورة</h2>
+          <div id="postsList" class="admin-posts-list">
+            <p class="admin-loading">جارٍ التحميل...</p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <script type="module" src="scripts/admin.js"></script>
+  </body>
+</html>

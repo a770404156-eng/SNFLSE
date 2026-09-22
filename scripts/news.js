@@ -1,8 +1,11 @@
 /* ─────────────────────────────────────────────────────────
    news.js
    Handles: mobile menu, share dropdown, reveal animations,
-            filter buttons, lightbox for photos, Google Sheets fetch
+            filter buttons, lightbox for photos, loading news
+            from Firestore
    ───────────────────────────────────────────────────────── */
+
+import { db, collection, getDocs, query, orderBy } from './firebase-init.js';
 
 /* ── Mobile menu ──────────────────────────────────────── */
 const menuBtn    = document.getElementById('menuBtn');
@@ -247,13 +250,12 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') { currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length; updateLightbox(); }
 });
 
-/* ── Google Sheets fetch ──────────────────────────────── */
-const API_URL = "https://script.google.com/macros/s/AKfycbyXA8jI1V-S8Hvw3VEP1zDCAwUxrYttvtnhrmydoZ-YIW9mGVvly6bshv8MJLFvTHS_4Q/exec";
-
+/* ── Load news from Firestore ─────────────────────────── */
 async function loadNews() {
   try {
-    const res  = await fetch(API_URL + '?t=' + Date.now());
-    const data = await res.json();
+    const q    = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    const data = snap.docs.map(d => d.data());
     renderNews(data);
   } catch (err) {
     console.error("Error loading news:", err);
