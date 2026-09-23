@@ -5,404 +5,420 @@
             from Firestore
    ───────────────────────────────────────────────────────── */
 
-import { db, collection, getDocs, query, orderBy } from './firebase-init.js';
+   import { db, collection, getDocs, query, orderBy } from './firebase-init.js';
 
-/* ── Mobile menu ──────────────────────────────────────── */
-const menuBtn    = document.getElementById('menuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-
-if (menuBtn && mobileMenu) {
-  menuBtn.addEventListener('click', () => {
-    const isOpen = mobileMenu.classList.toggle('active');
-    menuBtn.setAttribute('aria-expanded', String(isOpen));
-    mobileMenu.setAttribute('aria-hidden', String(!isOpen));
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-      mobileMenu.classList.remove('active');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      mobileMenu.setAttribute('aria-hidden', 'true');
-    }
-  });
-}
-
-/* ── Share dropdown ───────────────────────────────────── */
-const shareIcon     = document.getElementById('shareIcon');
-const shareDropdown = document.getElementById('shareDropdown');
-
-if (shareIcon && shareDropdown) {
-  shareIcon.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = shareDropdown.classList.toggle('active');
-    shareIcon.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!shareIcon.contains(e.target) && !shareDropdown.contains(e.target)) {
-      shareDropdown.classList.remove('active');
-      shareIcon.setAttribute('aria-expanded', 'false');
-    }
-  });
-}
-
-/* ── Reveal on scroll ─────────────────────────────────── */
-const revealEls = document.querySelectorAll('.reveal');
-
-if (revealEls.length) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-
-  revealEls.forEach((el) => observer.observe(el));
-}
-
-/* ── Filter buttons ───────────────────────────────────── */
-const filterBtns = document.querySelectorAll('.filter-btn');
-
-function getCards() {
-  return document.querySelectorAll('.news-card');
-}
-
-filterBtns.forEach((btn) => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const filter = btn.dataset.filter;
-
-    getCards().forEach((card) => {
-      const type = card.dataset.type;
-      const show = filter === 'all' || type === filter;
-
-      if (show) {
-        card.style.display = '';
-        card.style.animation = 'cardFadeIn 0.4s ease both';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-});
-
-/* ── Lightbox ─────────────────────────────────────────── */
-const lightbox        = document.getElementById('lightbox');
-const lightboxImg     = document.getElementById('lightboxImg');
-const lightboxClose   = document.getElementById('lightboxClose');
-const lightboxPrev    = document.getElementById('lightboxPrev');
-const lightboxNext    = document.getElementById('lightboxNext');
-const lightboxCounter = document.getElementById('lightboxCounter');
-
-let currentPhotos = [];
-let currentIndex  = 0;
-
-function openLightbox(photos, index = 0) {
-  currentPhotos = photos;
-  currentIndex  = index;
-  updateLightbox();
-  lightbox.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  lightbox.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-function updateLightbox() {
-  lightboxImg.src = currentPhotos[currentIndex];
-  lightboxCounter.textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
-  lightboxPrev.style.display = currentPhotos.length > 1 ? '' : 'none';
-  lightboxNext.style.display = currentPhotos.length > 1 ? '' : 'none';
-}
-
-if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-
-if (lightbox) {
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-}
-
-if (lightboxPrev) {
-  lightboxPrev.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
-    updateLightbox();
-  });
-}
-
-if (lightboxNext) {
-  lightboxNext.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % currentPhotos.length;
-    updateLightbox();
-  });
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    if (postModal && postModal.classList.contains('active')) closePostModal();
-    else if (lightbox && lightbox.classList.contains('active')) closeLightbox();
-  }
-  if (!lightbox || !lightbox.classList.contains('active')) return;
-  if (e.key === 'ArrowLeft')  { currentIndex = (currentIndex + 1) % currentPhotos.length; updateLightbox(); }
-  if (e.key === 'ArrowRight') { currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length; updateLightbox(); }
-});
-
-/* ── Post Modal ───────────────────────────────────────── */
-const postModal      = document.getElementById('postModal');
-const postModalClose = document.getElementById('postModalClose');
-
-function openPostModal(post, photos) {
-  const type = (post.type || 'news').trim().toLowerCase();
-
-  // Media
-  const mediaEl = document.getElementById('postModalMedia');
-  mediaEl.innerHTML = '';
-
-  if (type === 'video' && post.media) {
-    mediaEl.innerHTML = `<iframe src="${formatMediaLink(post.media)}" allowfullscreen loading="lazy"></iframe>`;
-  } else if (type === 'photo' && photos && photos.length) {
-    if (photos.length === 1) {
-      mediaEl.innerHTML = `<img src="${photos[0]}" alt="${post.title || ''}">`;
-    } else {
-      const imgs = photos.map((src, i) =>
-        `<img src="${src}" alt="صورة ${i+1}" class="lightbox-trigger-modal" data-photos='${JSON.stringify(photos)}' data-index="${i}">`
-      ).join('');
-      mediaEl.innerHTML = `<div class="modal-gallery">${imgs}</div>`;
-
-      // Lightbox triggers inside modal
-      mediaEl.querySelectorAll('.lightbox-trigger-modal').forEach(el => {
-        el.addEventListener('click', () => {
-          const p   = JSON.parse(el.dataset.photos || '[]');
-          const idx = parseInt(el.dataset.index || '0');
-          openLightbox(p, idx);
-        });
-      });
-    }
-  }
-
-  // Text
-  document.getElementById('postModalCategory').textContent = post.category || '';
-  document.getElementById('postModalTitle').textContent    = post.title    || '';
-  document.getElementById('postModalContent').textContent  = post.content  || '';
-  document.getElementById('postModalDateText').textContent = post.date     || '';
-
-  postModal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closePostModal() {
-  postModal.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-if (postModalClose) postModalClose.addEventListener('click', closePostModal);
-if (postModal) {
-  postModal.addEventListener('click', (e) => {
-    if (e.target === postModal) closePostModal();
-  });
-}
-
-/* ── attachLightboxTriggers (now opens post modal) ────── */
-function attachLightboxTriggers() {
-  document.querySelectorAll('.news-card').forEach(card => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('iframe')) return;
-      const post   = JSON.parse(card.dataset.post   || '{}');
-      const photos = JSON.parse(card.dataset.photos || '[]');
-      openPostModal(post, photos);
-    });
-  });
-}
-
-if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-
-if (lightbox) {
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-}
-
-if (lightboxPrev) {
-  lightboxPrev.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
-    updateLightbox();
-  });
-}
-
-if (lightboxNext) {
-  lightboxNext.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % currentPhotos.length;
-    updateLightbox();
-  });
-}
-
-document.addEventListener('keydown', (e) => {
-  if (!lightbox || !lightbox.classList.contains('active')) return;
-  if (e.key === 'Escape')     closeLightbox();
-  if (e.key === 'ArrowLeft')  { currentIndex = (currentIndex + 1) % currentPhotos.length; updateLightbox(); }
-  if (e.key === 'ArrowRight') { currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length; updateLightbox(); }
-});
-
-/* ── Load news from Firestore ─────────────────────────── */
-async function loadNews() {
-  try {
-    const q    = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
-    const snap = await getDocs(q);
-    const data = snap.docs.map(d => d.data());
-    renderNews(data);
-  } catch (err) {
-    console.error("Error loading news:", err);
-    const grid = document.getElementById("newsGrid");
-    if (grid) grid.innerHTML = `<div class="news-empty"><p>تعذّر تحميل الأخبار، يرجى المحاولة لاحقاً.</p></div>`;
-  }
-}
-
-/* ── Arabic labels for type badges ───────────────────── */
-const TYPE_LABELS = { news: 'خبر', photo: 'صورة', video: 'فيديو' };
-
-/* ── Render ───────────────────────────────────────────── */
-function renderNews(posts) {
-  const grid = document.getElementById("newsGrid");
-  grid.innerHTML = "";
-
-  if (!posts || !posts.length) {
-    grid.innerHTML = `<div class="news-empty"><p>لا توجد أخبار حالياً</p></div>`;
-    return;
-  }
-
-  posts.forEach((post, i) => {
-    const type  = (post.type  || "news").trim().toLowerCase();
-    const media = (post.media || "").trim();
-
-    const card = document.createElement("article");
-    card.className = "news-card";
-    // Store post data and photos on the card
-    card.dataset.post   = JSON.stringify(post);
-    card.dataset.photos = JSON.stringify(
-      type === 'photo' && media
-        ? media.split(',').map(u => formatMediaLink(u.trim())).filter(Boolean)
-        : []
-    );
-    card.dataset.type = type;
-    card.style.animationDelay = `${i * 0.08}s`;
-
-    /* ── Media area ─────────────────────────────────── */
-    let mediaHTML = "";
-
-    if (type === "video" && media) {
-      mediaHTML = `
-        <div class="card-media">
-          <iframe
-            src="${formatMediaLink(media)}"
-            allowfullscreen
-            loading="lazy"
-            title="${post.title || ''}"
-          ></iframe>
-          <span class="type-badge video">${TYPE_LABELS.video}</span>
-        </div>`;
-
-    } else if (type === "photo" && media) {
-      const photos = media.split(',')
-                          .map(u => formatMediaLink(u.trim()))
-                          .filter(Boolean);
-
-      if (photos.length === 1) {
-        mediaHTML = `
-          <div class="card-media">
-            <img
-              src="${photos[0]}"
-              alt="${post.title || ''}"
-              class="lightbox-trigger"
-              data-photos='${JSON.stringify(photos)}'
-              style="cursor:pointer;"
-            >
-            <span class="type-badge photo">${TYPE_LABELS.photo}</span>
-          </div>`;
-
-      } else {
-        const visible  = photos.slice(0, 3);
-        const extra    = photos.length - 3;
-        const countCls = `count-${Math.min(photos.length, 3)}`;
-
-        const strips = visible.map((src, idx) => {
-          const isLast = idx === visible.length - 1 && extra > 0;
-          return `
-            <div class="strip-img">
-              <img src="${src}" alt="صورة ${idx + 1}">
-              ${isLast ? `<div class="strip-more">+${extra}</div>` : ''}
-            </div>`;
-        }).join('');
-
-        mediaHTML = `
-          <div class="card-media" style="padding:0;">
-            <div
-              class="photo-strip ${countCls} lightbox-trigger"
-              data-photos='${JSON.stringify(photos)}'
-              style="cursor:pointer;"
-            >${strips}</div>
-            <span class="type-badge photo">${TYPE_LABELS.photo}</span>
-            <div class="media-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/>
-              </svg>
-              ${photos.length} صور
-            </div>
-          </div>`;
-      }
-
-    } else {
-      mediaHTML = `
-        <div class="card-media-placeholder">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-          </svg>
-        </div>`;
-    }
-
-    /* ── Card HTML ──────────────────────────────────── */
-    card.innerHTML = `
-      ${mediaHTML}
-      <div class="card-body">
-        <span class="card-category">${post.category || ''}</span>
-        <h2 class="card-title">${post.title || ''}</h2>
-        <p class="card-excerpt">${post.content || ''}</p>
-        <div class="card-meta">
-          <span class="card-date">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M19 4h-1V2h-2v2H8V2H6v2H5C3.9 4 3 4.9 3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
-            </svg>
-            ${post.date || ''}
-          </span>
-        </div>
-      </div>
-    `;
-
-    grid.appendChild(card);
-  });
-
-  attachLightboxTriggers();
-}
-
-/* ── Convert any Drive/YouTube URL to embeddable ─────── */
-function formatMediaLink(url) {
-  if (!url) return "";
-  if (url.includes('/preview') || url.includes('/embed/')) return url;
-
-  const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
-
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-
-  return url;
-}
-
-/* ── Boot ─────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', loadNews);
+   /* ── Mobile menu ──────────────────────────────────────── */
+   const menuBtn    = document.getElementById('menuBtn');
+   const mobileMenu = document.getElementById('mobileMenu');
+   
+   if (menuBtn && mobileMenu) {
+     menuBtn.addEventListener('click', () => {
+       const isOpen = mobileMenu.classList.toggle('active');
+       menuBtn.setAttribute('aria-expanded', String(isOpen));
+       mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+     });
+   
+     document.addEventListener('click', (e) => {
+       if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+         mobileMenu.classList.remove('active');
+         menuBtn.setAttribute('aria-expanded', 'false');
+         mobileMenu.setAttribute('aria-hidden', 'true');
+       }
+     });
+   }
+   
+   /* ── Share dropdown ───────────────────────────────────── */
+   const shareIcon     = document.getElementById('shareIcon');
+   const shareDropdown = document.getElementById('shareDropdown');
+   
+   if (shareIcon && shareDropdown) {
+     shareIcon.addEventListener('click', (e) => {
+       e.stopPropagation();
+       const isOpen = shareDropdown.classList.toggle('active');
+       shareIcon.setAttribute('aria-expanded', String(isOpen));
+     });
+   
+     document.addEventListener('click', (e) => {
+       if (!shareIcon.contains(e.target) && !shareDropdown.contains(e.target)) {
+         shareDropdown.classList.remove('active');
+         shareIcon.setAttribute('aria-expanded', 'false');
+       }
+     });
+   }
+   
+   /* ── Reveal on scroll ─────────────────────────────────── */
+   const revealEls = document.querySelectorAll('.reveal');
+   
+   if (revealEls.length) {
+     const observer = new IntersectionObserver((entries) => {
+       entries.forEach((entry) => {
+         if (entry.isIntersecting) {
+           entry.target.classList.add('visible');
+           observer.unobserve(entry.target);
+         }
+       });
+     }, { threshold: 0.12 });
+   
+     revealEls.forEach((el) => observer.observe(el));
+   }
+   
+   /* ── Filter buttons ───────────────────────────────────── */
+   const filterBtns = document.querySelectorAll('.filter-btn');
+   
+   function getCards() {
+     return document.querySelectorAll('.news-card');
+   }
+   
+   filterBtns.forEach((btn) => {
+     btn.addEventListener('click', () => {
+       filterBtns.forEach((b) => b.classList.remove('active'));
+       btn.classList.add('active');
+   
+       const filter = btn.dataset.filter;
+   
+       getCards().forEach((card) => {
+         const type = card.dataset.type;
+         const show = filter === 'all' || type === filter;
+   
+         if (show) {
+           card.style.display = '';
+           card.style.animation = 'cardFadeIn 0.4s ease both';
+         } else {
+           card.style.display = 'none';
+         }
+       });
+     });
+   });
+   
+   /* ── Lightbox ─────────────────────────────────────────── */
+   const lightbox        = document.getElementById('lightbox');
+   const lightboxImg     = document.getElementById('lightboxImg');
+   const lightboxClose   = document.getElementById('lightboxClose');
+   const lightboxPrev    = document.getElementById('lightboxPrev');
+   const lightboxNext    = document.getElementById('lightboxNext');
+   const lightboxCounter = document.getElementById('lightboxCounter');
+   
+   let currentPhotos = [];
+   let currentIndex  = 0;
+   
+   function openLightbox(photos, index = 0) {
+     currentPhotos = photos;
+     currentIndex  = index;
+     updateLightbox();
+     lightbox.classList.add('active');
+     document.body.style.overflow = 'hidden';
+   }
+   
+   function closeLightbox() {
+     lightbox.classList.remove('active');
+     document.body.style.overflow = '';
+   }
+   
+   function updateLightbox() {
+     lightboxImg.src = currentPhotos[currentIndex];
+     lightboxCounter.textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
+     lightboxPrev.style.display = currentPhotos.length > 1 ? '' : 'none';
+     lightboxNext.style.display = currentPhotos.length > 1 ? '' : 'none';
+   }
+   
+   if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+   
+   if (lightbox) {
+     lightbox.addEventListener('click', (e) => {
+       if (e.target === lightbox) closeLightbox();
+     });
+   }
+   
+   if (lightboxPrev) {
+     lightboxPrev.addEventListener('click', () => {
+       currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+       updateLightbox();
+     });
+   }
+   
+   if (lightboxNext) {
+     lightboxNext.addEventListener('click', () => {
+       currentIndex = (currentIndex + 1) % currentPhotos.length;
+       updateLightbox();
+     });
+   }
+   
+   document.addEventListener('keydown', (e) => {
+     if (e.key === 'Escape') {
+       if (lightbox && lightbox.classList.contains('active')) closeLightbox();
+       else if (postModal && postModal.classList.contains('active')) closePostModal();
+       return;
+     }
+     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+   
+     if (lightbox && lightbox.classList.contains('active')) {
+       if (e.key === 'ArrowLeft')  { currentIndex = (currentIndex + 1) % currentPhotos.length; updateLightbox(); }
+       if (e.key === 'ArrowRight') { currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length; updateLightbox(); }
+     } else if (modalCarouselNext && modalCarouselPrev) {
+       if (e.key === 'ArrowLeft')  modalCarouselNext();
+       if (e.key === 'ArrowRight') modalCarouselPrev();
+     }
+   });
+   
+   /* ── Post Modal ───────────────────────────────────────── */
+   const postModal      = document.getElementById('postModal');
+   const postModalClose = document.getElementById('postModalClose');
+   
+   // Tracks the active modal carousel's nav functions, so the
+   // keydown listener above can drive it. Cleared whenever the
+   // modal closes or shows a post with no carousel.
+   let modalCarouselPrev = null;
+   let modalCarouselNext = null;
+   
+   function renderModalCarousel(container, photos) {
+     let index = 0;
+   
+     container.innerHTML = `
+       <div class="modal-carousel">
+         <img class="carousel-img" src="${photos[0]}" alt="صورة 1">
+         <button type="button" class="carousel-nav carousel-prev" aria-label="الصورة السابقة">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg>
+         </button>
+         <button type="button" class="carousel-nav carousel-next" aria-label="الصورة التالية">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m8.6 7.4 1.4-1.4 6 6-6 6-1.4-1.4 4.6-4.6z"/></svg>
+         </button>
+         <div class="carousel-counter">1 / ${photos.length}</div>
+       </div>`;
+   
+     const imgEl     = container.querySelector('.carousel-img');
+     const counterEl = container.querySelector('.carousel-counter');
+     const prevBtn   = container.querySelector('.carousel-prev');
+     const nextBtn   = container.querySelector('.carousel-next');
+   
+     function update() {
+       imgEl.src = photos[index];
+       imgEl.alt = `صورة ${index + 1}`;
+       counterEl.textContent = `${index + 1} / ${photos.length}`;
+     }
+   
+     function goPrev() { index = (index - 1 + photos.length) % photos.length; update(); }
+     function goNext() { index = (index + 1) % photos.length; update(); }
+   
+     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goPrev(); });
+     nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goNext(); });
+   
+     // Tap the photo itself to open it full-screen (reuses the existing lightbox)
+     imgEl.addEventListener('click', () => openLightbox(photos, index));
+   
+     modalCarouselPrev = goPrev;
+     modalCarouselNext = goNext;
+   }
+   
+   function openPostModal(post, photos) {
+     const type = (post.type || 'news').trim().toLowerCase();
+   
+     modalCarouselPrev = null;
+     modalCarouselNext = null;
+   
+     // Media
+     const mediaEl = document.getElementById('postModalMedia');
+     mediaEl.innerHTML = '';
+   
+     if (type === 'video' && post.media) {
+       mediaEl.innerHTML = `<iframe src="${formatMediaLink(post.media)}" allowfullscreen loading="lazy"></iframe>`;
+     } else if (type === 'photo' && photos && photos.length) {
+       if (photos.length === 1) {
+         mediaEl.innerHTML = `<img src="${photos[0]}" alt="${post.title || ''}">`;
+       } else {
+         renderModalCarousel(mediaEl, photos);
+       }
+     }
+   
+     // Text
+     document.getElementById('postModalCategory').textContent = post.category || '';
+     document.getElementById('postModalTitle').textContent    = post.title    || '';
+     document.getElementById('postModalContent').textContent  = post.content  || '';
+     document.getElementById('postModalDateText').textContent = post.date     || '';
+   
+     postModal.classList.add('active');
+     document.body.style.overflow = 'hidden';
+   }
+   
+   function closePostModal() {
+     postModal.classList.remove('active');
+     document.body.style.overflow = '';
+     modalCarouselPrev = null;
+     modalCarouselNext = null;
+   }
+   
+   if (postModalClose) postModalClose.addEventListener('click', closePostModal);
+   if (postModal) {
+     postModal.addEventListener('click', (e) => {
+       if (e.target === postModal) closePostModal();
+     });
+   }
+   
+   /* ── attachLightboxTriggers (now opens post modal) ────── */
+   function attachLightboxTriggers() {
+     document.querySelectorAll('.news-card').forEach(card => {
+       card.style.cursor = 'pointer';
+       card.addEventListener('click', (e) => {
+         if (e.target.closest('iframe')) return;
+         const post   = JSON.parse(card.dataset.post   || '{}');
+         const photos = JSON.parse(card.dataset.photos || '[]');
+         openPostModal(post, photos);
+       });
+     });
+   }
+   
+   /* ── Load news from Firestore ─────────────────────────── */
+   async function loadNews() {
+     try {
+       const q    = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
+       const snap = await getDocs(q);
+       const data = snap.docs.map(d => d.data());
+       renderNews(data);
+     } catch (err) {
+       console.error("Error loading news:", err);
+       const grid = document.getElementById("newsGrid");
+       if (grid) grid.innerHTML = `<div class="news-empty"><p>تعذّر تحميل الأخبار، يرجى المحاولة لاحقاً.</p></div>`;
+     }
+   }
+   
+   /* ── Arabic labels for type badges ───────────────────── */
+   const TYPE_LABELS = { news: 'خبر', photo: 'صورة', video: 'فيديو' };
+   
+   /* ── Render ───────────────────────────────────────────── */
+   function renderNews(posts) {
+     const grid = document.getElementById("newsGrid");
+     grid.innerHTML = "";
+   
+     if (!posts || !posts.length) {
+       grid.innerHTML = `<div class="news-empty"><p>لا توجد أخبار حالياً</p></div>`;
+       return;
+     }
+   
+     posts.forEach((post, i) => {
+       const type  = (post.type  || "news").trim().toLowerCase();
+       const media = (post.media || "").trim();
+   
+       const card = document.createElement("article");
+       card.className = "news-card";
+       // Store post data and photos on the card
+       card.dataset.post   = JSON.stringify(post);
+       card.dataset.photos = JSON.stringify(
+         type === 'photo' && media
+           ? media.split(',').map(u => formatMediaLink(u.trim())).filter(Boolean)
+           : []
+       );
+       card.dataset.type = type;
+       card.style.animationDelay = `${i * 0.08}s`;
+   
+       /* ── Media area ─────────────────────────────────── */
+       let mediaHTML = "";
+   
+       if (type === "video" && media) {
+         mediaHTML = `
+           <div class="card-media">
+             <iframe
+               src="${formatMediaLink(media)}"
+               allowfullscreen
+               loading="lazy"
+               title="${post.title || ''}"
+             ></iframe>
+             <span class="type-badge video">${TYPE_LABELS.video}</span>
+           </div>`;
+   
+       } else if (type === "photo" && media) {
+         const photos = media.split(',')
+                             .map(u => formatMediaLink(u.trim()))
+                             .filter(Boolean);
+   
+         if (photos.length === 1) {
+           mediaHTML = `
+             <div class="card-media">
+               <img
+                 src="${photos[0]}"
+                 alt="${post.title || ''}"
+                 class="lightbox-trigger"
+                 data-photos='${JSON.stringify(photos)}'
+                 style="cursor:pointer;"
+               >
+               <span class="type-badge photo">${TYPE_LABELS.photo}</span>
+             </div>`;
+   
+         } else {
+           const visible  = photos.slice(0, 3);
+           const extra    = photos.length - 3;
+           const countCls = `count-${Math.min(photos.length, 3)}`;
+   
+           const strips = visible.map((src, idx) => {
+             const isLast = idx === visible.length - 1 && extra > 0;
+             return `
+               <div class="strip-img">
+                 <img src="${src}" alt="صورة ${idx + 1}">
+                 ${isLast ? `<div class="strip-more">+${extra}</div>` : ''}
+               </div>`;
+           }).join('');
+   
+           mediaHTML = `
+             <div class="card-media" style="padding:0;">
+               <div
+                 class="photo-strip ${countCls} lightbox-trigger"
+                 data-photos='${JSON.stringify(photos)}'
+                 style="cursor:pointer;"
+               >${strips}</div>
+               <span class="type-badge photo">${TYPE_LABELS.photo}</span>
+               <div class="media-badge">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                   <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/>
+                 </svg>
+                 ${photos.length} صور
+               </div>
+             </div>`;
+         }
+   
+       } else {
+         mediaHTML = `
+           <div class="card-media-placeholder">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+               <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+             </svg>
+           </div>`;
+       }
+   
+       /* ── Card HTML ──────────────────────────────────── */
+       card.innerHTML = `
+         ${mediaHTML}
+         <div class="card-body">
+           <span class="card-category">${post.category || ''}</span>
+           <h2 class="card-title">${post.title || ''}</h2>
+           <p class="card-excerpt">${post.content || ''}</p>
+           <div class="card-meta">
+             <span class="card-date">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                 <path d="M19 4h-1V2h-2v2H8V2H6v2H5C3.9 4 3 4.9 3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+               </svg>
+               ${post.date || ''}
+             </span>
+           </div>
+         </div>
+       `;
+   
+       grid.appendChild(card);
+     });
+   
+     attachLightboxTriggers();
+   }
+   
+   /* ── Convert any Drive/YouTube URL to embeddable ─────── */
+   function formatMediaLink(url) {
+     if (!url) return "";
+     if (url.includes('/preview') || url.includes('/embed/')) return url;
+   
+     const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+     if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+   
+     const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+     if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+   
+     return url;
+   }
+   
+   /* ── Boot ─────────────────────────────────────────────── */
+   document.addEventListener('DOMContentLoaded', loadNews);
