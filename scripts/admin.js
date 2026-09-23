@@ -13,7 +13,7 @@
      Cloud name: open your Cloudinary dashboard (cloudinary.com/console).
      It's shown right at the top of the page / in Settings — copy it
      EXACTLY as written there (case-sensitive). Don't guess. */
-  const CLOUDINARY_CLOUD_NAME    = "PASTE_YOUR_CLOUDINARY_CLOUD_NAME_HERE";
+  const CLOUDINARY_CLOUD_NAME    = "r24astro";
   const CLOUDINARY_UPLOAD_PRESET = "SNFLSE";
   
   const TYPE_LABELS = { news: 'خبر', photo: 'صورة', video: 'فيديو' };
